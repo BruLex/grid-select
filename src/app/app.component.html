@@ -1,0 +1,152 @@
+<div class="bitmap-show-container" [ngClass]="{'resize-pict': xLength * yLength > 4000}" *ngIf="isShowImg && !(xLength * yLength > 4000)">
+  <div class="image-grid-container">
+        <div class="selector-container">
+          <div class="wrapper">
+            <div class="grid-label col">&nbsp;</div>
+            <div class="left-legend-container" [class.shade]="i != null && j != null" (mouseleave)="onMouseLeave()">
+              <div *ngFor="let yLine of yLines; let x = index"
+                   class="grid-label row"
+                   [class.highlight]="x === i || i === null"
+                   (mouseenter)="onMouseEnterLabel(x, null)"
+                   (click)="onLabelClick()">
+                {{yLine}}
+              </div>
+            </div>
+          </div>
+          <div class="wrapper">
+            <div class="top-legend-container" [class.shade]="i != null && j != null" (mouseleave)="onMouseLeave()">
+              <div *ngFor="let xLine of xLines; let y = index"
+                   class="grid-label col"
+                   [class.highlight]="y === j || j === null"
+                   (mouseenter)="onMouseEnterLabel(null, y)"
+                   (click)="onLabelClick()">
+                {{ xLine }}
+              </div>
+            </div>
+            <div class="grid"
+                 (mouseleave)="onMouseLeave()"
+                 (mousedown)="onMouseDown($event)"
+                 (mouseup)="onMouseUp()">
+              <div *ngFor="let row of bitmapData; let x = index" class="row">
+                <div *ngFor="let cell of row; let y = index"
+                     class="cell {{ cell }}"
+                     matTooltip="x={{y}}, y={{x}}"
+                     [class.highlight]="isCellHighlighted(x, y)"
+                     (mouseenter)="onMouseEnter(x, y)">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  </div>
+
+  <div class="image-grid-container" *ngIf="this.xLength * this.yLength < 4000">
+    <div class="selector-container">
+      <div class="wrapper">
+        <div class="grid">
+          <div *ngFor="let row of bitmapData; let x = index" class="row">
+            <div *ngFor="let cell of row; let y = index"
+                 class="cell-without-color {{ cell }}">
+              {{getMapId(cell)}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bitmap-show-container" [ngClass]="{'resize-pict': xLength * yLength > 4000}" *ngIf="isShowImg && (xLength * yLength > 4000)">
+  <div class="image-grid-container">
+    <div class="selector-container">
+      <div class="wrapper">
+        <div class="grid-label col">&nbsp;</div>
+        <div class="left-legend-container" [class.shade]="i != null && j != null">
+          <div *ngFor="let yLine of yLines; let x = index"
+               class="grid-label row"
+               [class.highlight]="x === i || i === null">
+            {{yLine}}
+          </div>
+        </div>
+      </div>
+      <div class="wrapper">
+        <div class="top-legend-container" [class.shade]="i != null && j != null">
+          <div *ngFor="let xLine of xLines; let y = index"
+               class="grid-label col"
+               [class.highlight]="y === j || j === null">
+            {{ xLine }}
+          </div>
+        </div>
+        <div class="grid">
+          <div *ngFor="let row of bitmapData; let x = index" class="row">
+            <div *ngFor="let cell of row; let y = index"
+                 class="cell {{ cell }}"
+                 [class.highlight]="isCellHighlighted(x, y)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="image-grid-container" *ngIf="this.xLength * this.yLength < 4000">
+    <div class="selector-container">
+      <div class="wrapper">
+        <div class="grid">
+          <div *ngFor="let row of bitmapData; let x = index" class="row">
+            <div *ngFor="let cell of row; let y = index"
+                 class="cell-without-color {{ cell }}">
+              {{getMapId(cell)}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div style="margin-top: 20px">
+  <mat-slide-toggle
+    [checked]="isDrawMode"
+    (change)="isDrawMode=$event.checked"
+    color="primary">
+    Draw mode
+  </mat-slide-toggle>
+  <mat-slide-toggle
+    [checked]="isShowImg"
+    (change)="isShowImg=$event.checked"
+    color="primary">
+    Show image
+  </mat-slide-toggle>
+  <button mat-button (click)="clearGrid(bitmapData)">Clear</button>
+  <button mat-button (click)="file.click()">Select image</button>
+  <input style="display: none" type="file" #file (change)="onFileInputChange($event)">
+  <button mat-button (click)="findObjects()">Find all objects</button>
+  <button mat-button (click)="fillHoles()">Fill holes</button>
+  <button mat-button (click)="log()">Fill holes</button>
+</div>
+
+
+<div class="color-picker-container">
+  <div *ngFor="let accessType of selectTypeList" class="picker">
+    <div class="picker-element {{ accessType }}"
+         (click)="selectedSelectType = accessType">
+    </div>
+  </div>
+</div>
+
+<div class="find-legend-box">
+  <div *ngFor="let pictObj of pictureObjects" class="legend-content">
+    <span>Object ID: {{getMapId(pictObj.identify)}}</span>
+    <div class="color-picker-container">
+      <div class="picker">
+        <div class="picker-element {{ pictObj.identify }}"></div>
+      </div>
+    </div>
+    <span> Area: {{pictObj.area}}</span>
+    <span> Perimeter: {{pictObj.perimeter.toFixed(2)}}</span>
+    <span> Centroid metric: {{pictObj.centroidMetric.toFixed(2)}}</span>
+  </div>
+</div>

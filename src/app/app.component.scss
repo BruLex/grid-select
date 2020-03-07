@@ -1,0 +1,230 @@
+$cell-size: 16px;
+$picker-size: 24px;
+$shade-opacity: 0.38;
+$grid-length: 1px;
+$colors: (
+  selected: #000000,
+  nonselected: #ffffff,
+  extraselect: #00ff00,
+  maroon :#800000,
+  dark-red :#8B0000,
+  brown :#A52A2A,
+  firebrick :#B22222,
+  crimson :#DC143C,
+  red :#FF0000,
+  tomato :#FF6347,
+  coral :#FF7F50,
+  indian-red :#CD5C5C,
+  light-coral :#F08080,
+  dark-salmon :#E9967A,
+  salmon :#FA8072,
+  light-salmon :#FFA07A,
+  orange-red :#FF4500,
+  dark-orange :#FF8C00,
+  orange :#FFA500,
+  gold :#FFD700,
+  dark-golden-rod :#B8860B,
+  golden-rod :#DAA520,
+  pale-golden-rod :#EEE8AA,
+  dark-khaki :#BDB76B,
+  khaki :#F0E68C,
+  olive :#808000,
+  yellow :#FFFF00,
+  yellow-green :#9ACD32,
+  dark-olive-green :#556B2F,
+  olive-drab :#6B8E23,
+  lawn-green :#7CFC00,
+  chart-reuse :#7FFF00,
+  green-yellow :#ADFF2F
+);
+$border-colors: (
+  selected: #999999,
+  nonselected: #aaaaaa,
+  extraselect: #00aa00,
+  maroon :#800000,
+  dark-red :#8B0000,
+  brown :#A52A2A,
+  firebrick :#B22222,
+  crimson :#DC143C,
+  red :#FF0000,
+  tomato :#FF6347,
+  coral :#FF7F50,
+  indian-red :#CD5C5C,
+  light-coral :#F08080,
+  dark-salmon :#E9967A,
+  salmon :#FA8072,
+  light-salmon :#FFA07A,
+  orange-red :#FF4500,
+  dark-orange :#FF8C00,
+  orange :#FFA500,
+  gold :#FFD700,
+  dark-golden-rod :#B8860B,
+  golden-rod :#DAA520,
+  pale-golden-rod :#EEE8AA,
+  dark-khaki :#BDB76B,
+  khaki :#F0E68C,
+  olive :#808000,
+  yellow :#FFFF00,
+  yellow-green :#9ACD32,
+  dark-olive-green :#556B2F,
+  olive-drab :#6B8E23,
+  lawn-green :#7CFC00,
+  chart-reuse :#7FFF00,
+  green-yellow :#ADFF2F
+);
+
+@mixin set-colors($hover-selector: ':hover') {
+  @each $type, $color in $colors {
+    &.#{$type} {
+      background-color: $color;
+      border-color: $color;
+
+      &#{$hover-selector} {
+        border-color: map-get($border-colors, $type);
+      }
+    }
+  }
+}
+
+.resize-pict {
+  position: absolute;
+  transform: scale(0.17);
+  width: 200px;
+  height: 200px;
+}
+
+.bitmap-show-container {
+  display: flex;
+  & > div:last-child {
+    top: 18px;
+    position: relative;
+  }
+}
+.find-legend-box {
+  display: flex;
+  .legend-content {
+    display: grid;
+    width: 160px;
+  }
+}
+
+.image-grid-container {
+  display: inline-block;
+  margin-top: 16px;
+  text-align: right;
+}
+
+.selector-container {
+  display: flex;
+  flex-direction: row;
+  cursor: default;
+
+  .grid-label {
+    padding: $grid-length;
+    font-size: 12px;
+    user-select: none;
+    transition: color 0.3s ease-in-out;
+
+    &:hover, &.highlight {
+      color: rgba(0, 0, 0, 1);
+      font-weight: bold;
+    }
+    &.col {
+      width: $cell-size;
+      text-align: center;
+      padding-bottom: 5px;
+    }
+    &.row {
+      height: $cell-size;
+      text-align: right;
+      line-height: $cell-size;
+      padding-right: 7px;
+    }
+  }
+}
+
+.color-picker-container {
+  display: flex;
+
+  .picker {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border: 1px solid;
+    border-radius: 12px;
+    transition: border-color 0.2s ease-in-out;
+    &:hover {
+      border: none;
+      border-radius: unset;
+    }
+    .picker-element {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      width: $picker-size;
+      height: $picker-size;
+      border: 2px solid;
+      border-radius: 12px;
+      margin: 2px;
+      color: white;
+      transition: border-color 0.2s ease-in-out;
+      @include set-colors();
+      -webkit-user-select: none;
+      -moz-user-select: none;
+    }
+  }
+}
+
+.top-legend-container {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+
+  &:hover, &.shade {
+    color: rgba(0, 0, 0, $shade-opacity);
+  }
+}
+
+.left-legend-container {
+  display: flex;
+  flex-direction: column;
+  width: 50px;
+
+  &:hover, &.shade {
+    color: rgba(0, 0, 0, $shade-opacity);
+  }
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+
+  .row {
+    display: flex;
+    flex-direction: row;
+
+    .cell {
+      width: $cell-size;
+      height: $cell-size;
+      box-sizing: border-box;
+      margin: $grid-length;
+      border: 2px solid;
+      border-radius: 0px;
+      @include set-colors('.highlight');
+    }
+
+    .cell-without-color {
+      width: $cell-size;
+      height: $cell-size;
+      box-sizing: border-box;
+      margin: $grid-length;
+    }
+
+  }
+}
